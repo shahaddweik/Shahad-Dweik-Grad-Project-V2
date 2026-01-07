@@ -115,8 +115,9 @@ export async function POST(req: NextRequest) {
       CRITICAL RULES (STRICT ADHERENCE REQUIRED):
       1. **NO HALLUCINATIONS**: Do NOT invent columns.
       2. **TITLE QUALITY**: Generate a clean, professional title.
-      3. **DATA GROUNDING**: Every metric and chart MUST be derivable from the provided sample keys.
-      4. **ADDITIVE REQUESTS**: If this is an additive request, DO NOT re-generate standard analysis sections unless explicitly asked.
+      3. **DATA GROUNDING**: Every metric and chart MUST be derivable from the provided sample keys. Calculate percentages and rates precisely based on the provided JSON sample.
+      4. **CONSISTENCY**: Use consistent precision for numbers (e.g., 2 decimal places for percentages).
+      5. **ADDITIVE REQUESTS**: If this is an additive request, DO NOT re-generate standard analysis sections unless explicitly asked.
 
       ${objectivesSection}
 
@@ -130,7 +131,7 @@ export async function POST(req: NextRequest) {
       chatCompletion = await groq.chat.completions.create({
         messages: [{ role: "user", content: prompt }],
         model: "llama-3.3-70b-versatile",
-        temperature: 0.2,
+        temperature: 0.0,
         max_tokens: 4000,
         response_format: { type: "json_object" },
       });
@@ -143,7 +144,7 @@ export async function POST(req: NextRequest) {
         chatCompletion = await groq.chat.completions.create({
           messages: [{ role: "user", content: prompt }],
           model: "llama-3.1-8b-instant",
-          temperature: 0.2,
+          temperature: 0.0,
           max_tokens: 4000,
           response_format: { type: "json_object" },
         });
