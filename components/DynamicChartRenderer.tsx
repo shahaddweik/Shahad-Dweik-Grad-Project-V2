@@ -35,23 +35,26 @@ export function DynamicChartRenderer({ chart, isDarkMode = true }: { chart: Dyna
   const { chartType, data, title, description } = chart;
 
   const getAxisStyle = () => ({
-      fontSize: 12, 
-      fill: isDarkMode ? '#9CA3AF' : '#6B7280', // gray-400 vs gray-500
-      stroke: 'none'
+    fontSize: 12,
+    fill: isDarkMode ? '#9CA3AF' : '#6B7280', // gray-400 vs gray-500
+    stroke: 'none'
   });
 
   const getGridStyle = () => ({
-      stroke: isDarkMode ? 'rgba(255,255,255,0.1)' : '#E5E7EB',
-      strokeDasharray: '3 3',
-      vertical: false
+    stroke: isDarkMode ? 'rgba(255,255,255,0.1)' : '#E5E7EB',
+    strokeDasharray: '3 3',
+    vertical: false
   });
 
   const getTooltipStyle = () => ({
-      backgroundColor: isDarkMode ? 'rgba(17, 24, 39, 0.95)' : '#ffffff',
-      border: isDarkMode ? '1px solid rgba(255,255,255,0.1)' : '1px solid #E5E7EB',
-      borderRadius: '8px',
-      color: isDarkMode ? '#F3F4F6' : '#1F2937',
-      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+    backgroundColor: 'rgba(255, 255, 255, 0.96)',
+    border: '1px solid #E5E7EB',
+    borderRadius: '12px',
+    color: '#111827',
+    minWidth: '150px',
+    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+    padding: '12px',
+    fontWeight: 600,
   });
 
   const renderChart = () => {
@@ -108,13 +111,13 @@ export function DynamicChartRenderer({ chart, isDarkMode = true }: { chart: Dyna
         );
 
       case 'area':
-         return (
+        return (
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={data}>
               <defs>
                 <linearGradient id={`colorValue-${chart.id}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <XAxis dataKey="name" tick={getAxisStyle()} axisLine={false} tickLine={false} dy={10} />
@@ -125,38 +128,38 @@ export function DynamicChartRenderer({ chart, isDarkMode = true }: { chart: Dyna
             </AreaChart>
           </ResponsiveContainer>
         );
-      
+
       case 'scatter':
         const isTrueScatter = data.length > 0 && 'x' in data[0] && typeof data[0].x === 'number';
-        
+
         return (
-           <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={300}>
             <ScatterChart>
               <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? "rgba(255,255,255,0.1)" : "#E5E7EB"} />
               {isTrueScatter ? (
                 <>
                   <XAxis type="number" dataKey="x" name="X" tick={getAxisStyle()} axisLine={false} tickLine={false} dy={10} />
                   <YAxis type="number" dataKey="y" name="Y" tick={getAxisStyle()} axisLine={false} tickLine={false} />
-                  <Tooltip 
-                    cursor={{ strokeDasharray: '3 3' }} 
+                  <Tooltip
+                    cursor={{ strokeDasharray: '3 3' }}
                     contentStyle={getTooltipStyle()}
                     formatter={(value: any, name: any, props: any) => {
-                       // Custom tooltip for scatter to show name if available
-                       if (name === 'X' || name === 'Y') return [value, name];
-                       return [value, name];
+                      // Custom tooltip for scatter to show name if available
+                      if (name === 'X' || name === 'Y') return [value, name];
+                      return [value, name];
                     }}
                     content={({ active, payload, label }) => {
-                        if (active && payload && payload.length) {
-                          const pt = payload[0].payload;
-                          return (
-                            <div style={getTooltipStyle()} className="p-3 text-sm">
-                              <p className="font-bold mb-1">{pt.name}</p>
-                              <p>X: {pt.x}</p>
-                              <p>Y: {pt.y}</p>
-                            </div>
-                          );
-                        }
-                        return null;
+                      if (active && payload && payload.length) {
+                        const pt = payload[0].payload;
+                        return (
+                          <div style={getTooltipStyle()} className="p-3 text-sm">
+                            <p className="font-bold mb-1">{pt.name}</p>
+                            <p>X: {pt.x}</p>
+                            <p>Y: {pt.y}</p>
+                          </div>
+                        );
+                      }
+                      return null;
                     }}
                   />
                   <Scatter name="Matches" data={data} fill="#f59e0b" />
@@ -180,25 +183,25 @@ export function DynamicChartRenderer({ chart, isDarkMode = true }: { chart: Dyna
   };
 
   return (
-    <div key={chart.id} 
-         className={`p-6 rounded-2xl shadow-sm border backdrop-blur-sm transition-all hover:scale-[1.01] duration-300
-         ${isDarkMode 
-            ? 'bg-white/5 border-white/10 hover:bg-white/10 shadow-lg' 
-            : 'bg-white border-gray-100 shadow-sm'}
-         ${chart.isNew ? (isDarkMode ? 'border-purple-500/50 ring-2 ring-purple-500/20' : 'border-purple-200 ring-4 ring-purple-50/50') : ''}`} 
-         ref={chartRef}>
+    <div key={chart.id}
+      className={`p-6 rounded-2xl shadow-sm border backdrop-blur-sm transition-all hover:scale-[1.01] duration-300
+         ${isDarkMode
+          ? 'bg-white/5 border-white/10 hover:bg-white/10 shadow-lg'
+          : 'bg-white border-gray-100 shadow-sm'}
+         ${chart.isNew ? (isDarkMode ? 'border-purple-500/50 ring-2 ring-purple-500/20' : 'border-purple-200 ring-4 ring-purple-50/50') : ''}`}
+      ref={chartRef}>
       <div className="mb-6 flex justify-between items-start">
-         <div>
-            <h3 className={`text-lg font-bold flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-              {title}
-              {chart.isNew && (
-                <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wide border ${isDarkMode ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' : 'bg-purple-100 text-purple-700 border-purple-200'}`}>
-                   New
-                </span>
-              )}
-            </h3>
-        <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{description}</p>
-      </div>
+        <div>
+          <h3 className={`text-lg font-bold flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+            {title}
+            {chart.isNew && (
+              <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wide border ${isDarkMode ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' : 'bg-purple-100 text-purple-700 border-purple-200'}`}>
+                New
+              </span>
+            )}
+          </h3>
+          <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{description}</p>
+        </div>
       </div>
       <div className="w-full h-[300px]">
         {renderChart()}

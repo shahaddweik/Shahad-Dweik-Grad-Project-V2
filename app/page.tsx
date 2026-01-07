@@ -15,7 +15,7 @@ export default function Home() {
 
   /* Persistence Logic */
   useEffect(() => {
-    const savedData = localStorage.getItem('karam_dashboard_data');
+    const savedData = localStorage.getItem('shahad_dashboard_data');
     if (savedData) {
       try {
         setData(JSON.parse(savedData));
@@ -27,14 +27,14 @@ export default function Home() {
 
   useEffect(() => {
     if (data) {
-      localStorage.setItem('karam_dashboard_data', JSON.stringify(data));
+      localStorage.setItem('shahad_dashboard_data', JSON.stringify(data));
     }
   }, [data]);
 
   const handleUpload = async (file: File, prompt?: string) => {
     setIsAnalyzing(true);
     setCurrentFile(file);
-    
+
     // Create an abort controller for timeout (60 seconds)
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 60000);
@@ -62,20 +62,20 @@ export default function Home() {
       const result = await response.json();
       // Mark initial items as NOT new to prevent badges on first load
       const cleanResult = {
-         ...result,
-         keyMetrics: result.keyMetrics?.map((m: any) => ({...m, isNew: false})) || [],
-         dynamicCharts: result.dynamicCharts?.map((c: any) => ({...c, isNew: false})) || [],
-         keyInsights: result.keyInsights?.map((i: any) => ({...i, isNew: false})) || [],
-         recommendations: result.recommendations?.map((r: any) => ({...r, isNew: false})) || []
+        ...result,
+        keyMetrics: result.keyMetrics?.map((m: any) => ({ ...m, isNew: false })) || [],
+        dynamicCharts: result.dynamicCharts?.map((c: any) => ({ ...c, isNew: false })) || [],
+        keyInsights: result.keyInsights?.map((i: any) => ({ ...i, isNew: false })) || [],
+        recommendations: result.recommendations?.map((r: any) => ({ ...r, isNew: false })) || []
       };
 
       setData(cleanResult);
     } catch (error: any) {
       console.error('Error analyzing file:', error);
       if (error.name === 'AbortError') {
-         alert('Request timed out. The file might be too large or the AI service is busy. Please try again.');
+        alert('Request timed out. The file might be too large or the AI service is busy. Please try again.');
       } else {
-         alert(error.message || 'Failed to analyze the file.');
+        alert(error.message || 'Failed to analyze the file.');
       }
     } finally {
       clearTimeout(timeoutId);
@@ -85,15 +85,32 @@ export default function Home() {
 
   const [showSuccess, setShowSuccess] = useState(false);
 
-  /* Persistence Logic */
-// ... existing imports ...
 
-// ... inside Home component ...
+  /* Persistence Logic */
+  // ... existing imports ...
+
+  // ... inside Home component ...
+  const [particles, setParticles] = useState<Array<{ width: string, height: string, left: string, delay: string, duration: string }>>([]);
+
+  useEffect(() => {
+    const newParticles = Array.from({ length: 80 }).map(() => {
+      const duration = 15 + Math.random() * 25; // 15-40s duration
+      return {
+        width: (Math.random() * 3 + 1.5) + 'px', // Min size 1.5px
+        height: (Math.random() * 3 + 1.5) + 'px',
+        left: Math.random() * 100 + '%',
+        // Negative delay simulates the animation having started already
+        delay: -(Math.random() * duration) + 's',
+        duration: duration + 's'
+      };
+    });
+    setParticles(newParticles);
+  }, []);
 
   const handleRefine = async (refinePrompt: string) => {
     if (!currentFile) return;
     setIsRefining(true);
-    
+
     try {
       // Gather current state context to help AI identify what to remove/replace
       const currentContext = {
@@ -129,7 +146,7 @@ export default function Home() {
       }
 
       const newResult = await response.json();
-      
+
       // Mark new items and SCRUB chart data to ensure numbers
       const markNew = (items: any[]) => items.map(item => ({ ...item, isNew: true }));
       const scrubCharts = (charts: any[]) => charts.map((chart: any) => ({
@@ -178,15 +195,15 @@ export default function Home() {
         return {
           ...prevData,
           keyMetrics: mergeUnique(prevMetrics, newItemSet.keyMetrics, 'label'),
-          dynamicCharts: mergeUnique(prevCharts, newItemSet.dynamicCharts, 'title'), 
+          dynamicCharts: mergeUnique(prevCharts, newItemSet.dynamicCharts, 'title'),
           keyInsights: mergeUnique(prevInsights, newItemSet.keyInsights, 'title'),
           recommendations: mergeUnique(prevRecs, newItemSet.recommendations, 'title'),
-          
-          analysisTitle: prevData.analysisTitle, 
+
+          analysisTitle: prevData.analysisTitle,
           analysisDescription: prevData.analysisDescription
         };
       });
-      
+
       // Trigger Success Animation
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000); // Hide after 3s
@@ -202,7 +219,7 @@ export default function Home() {
   const handleReset = () => {
     setData(null);
     setCurrentFile(null);
-    localStorage.removeItem('karam_dashboard_data');
+    localStorage.removeItem('shahad_dashboard_data');
   };
 
   const handleSessionRestore = (file: File) => {
@@ -215,11 +232,11 @@ export default function Home() {
 
   if (data) {
     return (
-      <DashboardView 
-        data={data} 
-        onReset={handleReset} 
-        onRefine={handleRefine} 
-        isRefining={isRefining} 
+      <DashboardView
+        data={data}
+        onReset={handleReset}
+        onRefine={handleRefine}
+        isRefining={isRefining}
         isSessionActive={!!currentFile}
         onSessionRestore={handleSessionRestore}
         showSuccess={showSuccess}
@@ -229,50 +246,87 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative flex flex-col font-sans bg-black overflow-hidden selection:bg-blue-500/30">
-      
-      {/* Dynamic Dark Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-900/40 rounded-full mix-blend-screen filter blur-[120px] opacity-50 animate-blob"></div>
-        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-900/40 rounded-full mix-blend-screen filter blur-[120px] opacity-50 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-[-20%] left-[20%] w-[600px] h-[600px] bg-indigo-900/40 rounded-full mix-blend-screen filter blur-[120px] opacity-50 animate-blob animation-delay-4000"></div>
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
+
+      {/* Dynamic Aurora Background - Fixed Position to cover viewport always */}
+      <div className="fixed inset-0 z-0 bg-[#000000] overflow-hidden">
+
+        {/* Deep Space Base Gradient - Pitch Black */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#000000] via-[#010108] to-[#0a0a1a]"></div>
+
+        {/* Shooting Star - Bottom Left to Top Right */}
+        <div className="absolute bottom-0 left-0 w-[400px] h-[3px] bg-gradient-to-r from-transparent via-white to-transparent opacity-0 animate-[shooting-star_4s_ease-out_forwards] blur-[2px] rotate-[-45deg] origin-bottom-left"></div>
+        <div className="absolute bottom-[10%] left-[10%] w-[300px] h-[3px] bg-gradient-to-r from-transparent via-blue-200 to-transparent opacity-0 animate-[shooting-star_5s_ease-out_1s_forwards] blur-[1px] rotate-[-45deg] origin-bottom-left"></div>
+
+        {/* Aurora Bands */}
+        <div className="absolute inset-0 opacity-40 mix-blend-screen overflow-hidden">
+          <div className="absolute -inset-[50%] bg-gradient-to-r from-transparent via-purple-500 to-transparent blur-[100px] animate-aurora-1 opacity-50"></div>
+          <div className="absolute -inset-[50%] bg-gradient-to-t from-transparent via-blue-500 to-transparent blur-[80px] animate-aurora-2 opacity-40"></div>
+          <div className="absolute -inset-[50%] bg-gradient-to-br from-transparent via-indigo-400 to-transparent blur-[90px] animate-aurora-3 opacity-30"></div>
+        </div>
+
+        {/* Floating Particles/Stars */}
+        <div className="absolute inset-0">
+          {particles.map((p, i) => (
+            <div
+              key={i}
+              className="absolute bg-white rounded-full"
+              style={{
+                width: p.width,
+                height: p.height,
+                left: p.left,
+                top: '100%',
+                animationName: 'float',
+                animationTimingFunction: 'linear',
+                animationIterationCount: 'infinite',
+                animationDelay: p.delay,
+                animationDuration: p.duration
+              }}
+            ></div>
+          ))}
+        </div>
+
+        {/* Noise overlay for texture */}
+        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.15] mix-blend-overlay pointer-events-none"></div>
+
+        {/* Subtle grid */}
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.05] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
       </div>
 
       {/* Content */}
       <div className="relative z-10 flex flex-col min-h-screen text-white">
         <PageHeader />
-        
+
         <main className="flex-grow flex flex-col items-center justify-center p-4">
           <div className="text-center max-w-5xl mx-auto mb-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 relative">
-            
+
             {/* Ambient Glow behind text */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-blue-600/20 blur-[100px] rounded-full -z-10"></div>
 
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/30 border border-blue-500/30 text-xs font-medium text-blue-300 mb-8 backdrop-blur-md animate-in fade-in zoom-in duration-700">
-               <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-                </span>
-                Shahad D Graduation Project v1.0
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+              </span>
+              Shahad D Graduation Project v1.0
             </div>
 
-            <h2 className="text-6xl md:text-8xl font-black text-white mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-blue-200 tracking-tighter drop-shadow-2xl leading-none">
+            <h2 className="text-6xl md:text-8xl font-black text-white mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-blue-200 tracking-tighter drop-shadow-2xl leading-none pb-2">
               Smart Logistics<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Analytics</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 pr-4 pb-2 inline-block">Analytics</span>
             </h2>
-            
+
             <p className="text-xl md:text-2xl text-blue-100/70 mb-10 max-w-3xl mx-auto leading-relaxed tracking-tight font-light">
               Detect delays, optimize routes, and audit carrier performance instantly.
               Upload shipment data from <span className="text-white font-semibold">Aramex, FedEx, or DHL</span> to get actionable AI insights.
             </p>
-            
+
           </div>
-          
+
           <div className="w-full max-w-2xl bg-white/5 backdrop-blur-2xl rounded-3xl p-2 border border-white/10 shadow-2xl shadow-blue-900/20 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
-             <FileUploader onUpload={handleUpload} isAnalyzing={isAnalyzing} />
+            <FileUploader onUpload={handleUpload} isAnalyzing={isAnalyzing} />
           </div>
         </main>
-        
+
         <PageFooter />
       </div>
     </div>

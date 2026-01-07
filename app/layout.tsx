@@ -13,18 +13,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Karam A+ Grad project | User Analysis",
-  description: "Comprehensive User Analysis Dashboard for Karam A+ Grad project, featuring multi-agent data pipelines, demographics, and engagement metrics.",
+  title: "Shahad D Graduation Project | Shipment Analysis",
+  description: "Comprehensive Shipment Analysis Dashboard for Shahad D Graduation Project, featuring AI-driven insights, logistics metrics, and carrier performance auditing.",
   openGraph: {
-    title: "Karam A+ Grad project User Analysis Dashboard",
-    description: "Insights into active users including demographics, engagement, and padel rank distribution.",
+    title: "Shahad D Graduation Project Shipment Analysis Dashboard",
+    description: "Insights into logistics data including delays, route optimization, and carrier performance.",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Karam A+ Grad project User Analysis",
-    description: "Multi-agent data analysis of user base.",
+    title: "Shahad D Graduation Project Shipment Analysis",
+    description: "AI-driven data analysis of shipment logistics.",
   }
 };
 
