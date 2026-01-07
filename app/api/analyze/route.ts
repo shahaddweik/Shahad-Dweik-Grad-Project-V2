@@ -34,8 +34,8 @@ export async function POST(req: NextRequest) {
     const allData = XLSX.utils.sheet_to_json(sheet);
 
     // Send a sample of data to the AI
-    // Reverted to 35 records to respect Groq Free Tier limits (approx 12k tokens/min).
-    const promptData = allData.slice(0, 35);
+    // Reduced to 20 records to fit within both TPD and TPM limits of Groq Free Tier.
+    const promptData = allData.slice(0, 20);
     const dataString = JSON.stringify(promptData);
 
     // 2. Prepare Detailed Prompt
