@@ -246,23 +246,24 @@ export default function Home() {
           <div className="text-center max-w-5xl mx-auto mb-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 relative">
             
             {/* Ambient Glow behind text */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-blue-500/10 blur-[100px] rounded-full -z-10"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-blue-600/20 blur-[100px] rounded-full -z-10"></div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-blue-300 mb-8 backdrop-blur-md animate-in fade-in zoom-in duration-700">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/30 border border-blue-500/30 text-xs font-medium text-blue-300 mb-8 backdrop-blur-md animate-in fade-in zoom-in duration-700">
                <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                 </span>
-                AI-Powered Analytics v3.0
+                Shahad D Graduation Project v1.0
             </div>
 
-            <h2 className="text-6xl md:text-8xl font-black text-white mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-gray-500 tracking-tighter drop-shadow-2xl leading-none">
-              Intelligent<br />Data Analysis
+            <h2 className="text-6xl md:text-8xl font-black text-white mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-blue-200 tracking-tighter drop-shadow-2xl leading-none">
+              Smart Logistics<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Analytics</span>
             </h2>
             
-            <p className="text-xl md:text-2xl text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed tracking-tight font-light">
-              Unlock the power of your data.
-              Powered by <span className="text-blue-400 font-semibold">Groq Llama 3</span>, getting insights is now instant and precise.
+            <p className="text-xl md:text-2xl text-blue-100/70 mb-10 max-w-3xl mx-auto leading-relaxed tracking-tight font-light">
+              Detect delays, optimize routes, and audit carrier performance instantly.
+              Upload shipment data from <span className="text-white font-semibold">Aramex, FedEx, or DHL</span> to get actionable AI insights.
             </p>
             
           </div>

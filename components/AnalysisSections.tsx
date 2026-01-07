@@ -108,39 +108,54 @@ export function RecommendationsSection({ recommendations, isDarkMode = true }: {
            <Zap className="text-amber-400" />
            Strategic Recommendations
         </h3>
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {recommendations.map((rec, index) => (
             <div 
               key={index}
               className={`
-                border rounded-2xl p-6 shadow-sm backdrop-blur-md transition-all flex items-start gap-4 group
+                relative border p-6 rounded-2xl transition-all duration-300 group flex flex-col justify-between
                 ${isDarkMode 
-                   ? 'bg-white/5 border-white/10 hover:bg-white/10' 
-                   : 'bg-white border-gray-100 hover:shadow-md'}
-                ${rec.isNew ? (isDarkMode ? 'border-purple-500/50 bg-purple-900/10' : 'border-purple-200 bg-purple-50') : ''}
+                   ? 'bg-[#0f172a] border-blue-500/20 hover:border-blue-400/50 hover:shadow-lg hover:shadow-blue-900/10' 
+                   : 'bg-white border-slate-200 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100'}
+                ${rec.impact === 'high' && isDarkMode ? 'shadow-red-900/10 border-red-500/20' : ''}
               `}
             >
-               <div className={`
-                 p-2 rounded-lg shrink-0 transition-colors
-                 ${rec.impact === 'high' ? (isDarkMode ? 'bg-red-500/20 text-red-400' : 'bg-red-100 text-red-600') : (isDarkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-600')}
-               `}>
-                 <Target size={20} />
+               <div className="flex items-start justify-between mb-3">
+                  <div className={`
+                    p-2 rounded-lg transition-colors
+                    ${rec.impact === 'high' 
+                        ? (isDarkMode ? 'bg-red-500/10 text-red-500' : 'bg-red-50 text-red-600') 
+                        : (isDarkMode ? 'bg-blue-500/10 text-blue-500' : 'bg-blue-50 text-blue-600')}
+                  `}>
+                    <Target size={20} />
+                  </div>
+                  
+                  {/* Badge Area */}
+                  <div className="flex gap-2">
+                     {rec.isNew && (
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${isDarkMode ? 'bg-purple-500/10 text-purple-300 border-purple-500/30' : 'bg-purple-100 text-purple-700 border-purple-200'}`}>NEW</span>
+                     )}
+                     {rec.impact === 'high' && (
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border animate-pulse ${isDarkMode ? 'bg-red-500/10 text-red-400 border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.2)]' : 'bg-red-100 text-red-700 border-red-200'}`}>
+                           HIGH IMPACT
+                        </span>
+                     )}
+                  </div>
+               </div>
+
+               <div>
+                 <h4 className={`font-bold text-lg mb-2 group-hover:text-blue-500 transition-colors ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                    {rec.title}
+                 </h4>
+                 <p className={`text-sm leading-relaxed mb-4 font-light ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                    {rec.action}
+                 </p>
                </div>
                
-               <div className="flex-grow">
-                 <div className="flex items-center gap-2 mb-1">
-                    <h4 className={`font-semibold transition-colors text-lg group-hover:text-blue-500 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{rec.title}</h4>
-                    {rec.isNew && <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full border ${isDarkMode ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' : 'bg-purple-100 text-purple-700 border-purple-200'}`}>New</span>}
-                    {rec.impact === 'high' && (
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${isDarkMode ? 'bg-red-900/30 text-red-300 border-red-500/20' : 'bg-red-100 text-red-700 border-red-200'}`}>
-                        High Impact
-                      </span>
-                    )}
-                 </div>
-                 <p className={`text-sm leading-relaxed mb-3 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{rec.action}</p>
-                 <div className="flex items-center text-blue-500 text-xs font-bold uppercase tracking-wider group-hover:translate-x-1 transition-transform">
-                    Action Plan <div className="w-4 h-4 ml-1">→</div>
-                 </div>
+               <div className={`mt-auto pt-4 border-t ${isDarkMode ? 'border-white/5' : 'border-slate-100'}`}>
+                  <button className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1 transition-colors ${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`}>
+                     Execute Strategy <Zap size={12} fill="currentColor" />
+                  </button>
                </div>
             </div>
           ))}
