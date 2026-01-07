@@ -35,10 +35,10 @@ export function StatCard({
         whileHover={{ y: -5 }}
         viewport={{ once: true }}
         className={`relative rounded-2xl p-6 border transition-all hover:scale-[1.02] duration-300 ${isAccent
-            ? "bg-gradient-to-br from-blue-600 to-indigo-600 text-white border-transparent shadow-lg shadow-blue-500/30"
-            : isDarkMode
-              ? "bg-white/5 border-white/10 text-white shadow-lg shadow-blue-900/10 backdrop-blur-sm"
-              : "bg-white border-gray-100 text-gray-900 shadow-sm hover:shadow-md"
+          ? "bg-gradient-to-br from-blue-600 to-indigo-600 text-white border-transparent shadow-lg shadow-blue-500/30"
+          : isDarkMode
+            ? "bg-white/5 border-white/10 text-white shadow-lg shadow-blue-900/10 backdrop-blur-sm"
+            : "bg-white border-gray-100 text-gray-900 shadow-sm hover:shadow-md"
           } ${isNew ? 'ring-2 ring-purple-500 ring-offset-2 ring-offset-black' : ''}`}
       >
         {isNew && (
@@ -54,11 +54,11 @@ export function StatCard({
             >
               {label}
             </p>
-            <h3 className="text-2xl font-bold mt-1 tracking-tight">{value}</h3>
+            <h3 className={`font-bold mt-1 tracking-tight break-words ${value.length > 10 ? 'text-lg' : 'text-2xl'}`}>{value}</h3>
           </div>
           <button
             onClick={() => setIsOpen(true)}
-            className={`p-2 rounded-lg transition-transform hover:scale-110 active:scale-95 ${isAccent ? "bg-white/20" : isDarkMode ? "bg-white/10 text-blue-400" : "bg-blue-50 text-blue-600"
+            className={`p-2 rounded-lg shrink-0 transition-transform hover:scale-110 active:scale-95 ${isAccent ? "bg-white/20" : isDarkMode ? "bg-white/10 text-blue-400" : "bg-blue-50 text-blue-600"
               }`}
           >
             {icon}
@@ -87,8 +87,8 @@ export function StatCard({
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               className={`relative w-full max-w-md overflow-hidden rounded-3xl border p-8 shadow-2xl ${isDarkMode
-                  ? "bg-[#0a0a1a] border-white/10 text-white"
-                  : "bg-white border-gray-100 text-gray-900"
+                ? "bg-[#0a0a1a] border-white/10 text-white"
+                : "bg-white border-gray-100 text-gray-900"
                 }`}
             >
               <div className="flex items-center justify-between mb-6">
