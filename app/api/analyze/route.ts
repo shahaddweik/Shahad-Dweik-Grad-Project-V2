@@ -34,9 +34,9 @@ export async function POST(req: NextRequest) {
     const allData = XLSX.utils.sheet_to_json(sheet);
 
     // Send a random sample of data to the AI to provide a better overview of the entire dataset.
-    // Reduced to 25 records to strictly fit within the 6000-token limit of Groq's fallback models.
+    // RESTORED TO 35: Using a streamlined prompt to fit within 6000 TPM limit.
     const shuffled = [...allData].sort(() => 0.5 - Math.random());
-    const promptData = shuffled.slice(0, 25);
+    const promptData = shuffled.slice(0, 35);
     const dataString = JSON.stringify(promptData);
 
     // 2. Prepare Detailed Prompt
@@ -116,10 +116,9 @@ export async function POST(req: NextRequest) {
       CRITICAL RULES (STRICT ADHERENCE REQUIRED):
       1. **NO HALLUCINATIONS**: Do NOT invent columns.
       2. **TITLE QUALITY**: Generate a clean, professional title.
-      3. **EXACT CALCULATION**: For metrics like "Return Rate" or "Delay Rate", you MUST manually count the occurrences in the provided 35-record JSON. Do not estimate. 
-         - Formula: (Count of target status / Total records in sample) * 100.
-         - Show your math in the "description" field of the metric (e.g., "Calculated as 30/35 shipments").
-      4. **CONSISTENCY**: Use exactly 2 decimal places for all percentages.
+      3. **EXACT CALCULATION**: Manually count the occurrences in the ${promptData.length}-record JSON.
+         - The sum of values in any bar/pie chart MUST equal exactly ${promptData.length}.
+      4. **CONSISTENCY**: Use exactly 2 decimal places for all percentages. Use the formula: (Count / ${promptData.length}) * 100.
       5. **DATA GROUNDING**: Every metric and chart MUST be derivable from the provided sample keys.
       6. **ADDITIVE REQUESTS**: If this is an additive request, DO NOT re-generate standard analysis sections unless explicitly asked.
 
