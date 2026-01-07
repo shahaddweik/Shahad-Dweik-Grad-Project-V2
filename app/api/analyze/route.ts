@@ -34,9 +34,16 @@ export async function POST(req: NextRequest) {
     const allData = XLSX.utils.sheet_to_json(sheet);
 
     // Send a random sample of data to the AI to provide a better overview of the entire dataset.
-    // RESTORED TO 35: Using a streamlined prompt to fit within 6000 TPM limit.
+    // REDUCED TO 30: 35 exceeded the 6000 TPM limit (6447 tokens). 30 is the safe maximum.
     const shuffled = [...allData].sort(() => 0.5 - Math.random());
-    const promptData = shuffled.slice(0, 35);
+    // Clean data: Remove null/undefined/empty values to save tokens
+    const promptData = shuffled.slice(0, 30).map(item => {
+      const cleanItem: any = {};
+      Object.entries(item as any).forEach(([k, v]) => {
+        if (v !== null && v !== undefined && v !== '') cleanItem[k] = v;
+      });
+      return cleanItem;
+    });
     const dataString = JSON.stringify(promptData);
 
     // 2. Prepare Detailed Prompt
@@ -110,11 +117,11 @@ export async function POST(req: NextRequest) {
       - Total Records: ${allData.length}
       - Columns/Keys: ${Object.keys(promptData[0] || {}).join(", ")} <--- ONLY USE THESE FIELDS.
       
-      SAMPLE DATA (First 35 rows):
+      SAMPLE DATA (${promptData.length} records):
       ${dataString}
 
       CRITICAL RULES (STRICT ADHERENCE REQUIRED):
-      1. **NO HALLUCINATIONS**: Do NOT invent columns.
+      1. **NO HALLUCINATIONS**: Do NOT invent data.
       2. **TITLE QUALITY**: Generate a clean, professional title.
       3. **EXACT CALCULATION**: Manually count the occurrences in the ${promptData.length}-record JSON.
          - The sum of values in any bar/pie chart MUST equal exactly ${promptData.length}.
