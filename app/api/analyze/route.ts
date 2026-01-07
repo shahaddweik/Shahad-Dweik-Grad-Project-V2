@@ -33,9 +33,10 @@ export async function POST(req: NextRequest) {
     const sheet = workbook.Sheets[sheetName];
     const allData = XLSX.utils.sheet_to_json(sheet);
 
-    // Send a sample of data to the AI
-    // Reduced to 20 records to fit within both TPD and TPM limits of Groq Free Tier.
-    const promptData = allData.slice(0, 20);
+    // Send a random sample of data to the AI to provide a better overview of the entire dataset.
+    // We use a simple shuffle and take 35 records.
+    const shuffled = [...allData].sort(() => 0.5 - Math.random());
+    const promptData = shuffled.slice(0, 35);
     const dataString = JSON.stringify(promptData);
 
     // 2. Prepare Detailed Prompt
