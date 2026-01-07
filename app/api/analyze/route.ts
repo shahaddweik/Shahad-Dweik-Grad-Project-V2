@@ -115,9 +115,12 @@ export async function POST(req: NextRequest) {
       CRITICAL RULES (STRICT ADHERENCE REQUIRED):
       1. **NO HALLUCINATIONS**: Do NOT invent columns.
       2. **TITLE QUALITY**: Generate a clean, professional title.
-      3. **DATA GROUNDING**: Every metric and chart MUST be derivable from the provided sample keys. Calculate percentages and rates precisely based on the provided JSON sample.
-      4. **CONSISTENCY**: Use consistent precision for numbers (e.g., 2 decimal places for percentages).
-      5. **ADDITIVE REQUESTS**: If this is an additive request, DO NOT re-generate standard analysis sections unless explicitly asked.
+      3. **EXACT CALCULATION**: For metrics like "Return Rate" or "Delay Rate", you MUST manually count the occurrences in the provided 35-record JSON. Do not estimate. 
+         - Formula: (Count of target status / Total records in sample) * 100.
+         - Show your math in the "description" field of the metric (e.g., "Calculated as 30/35 shipments").
+      4. **CONSISTENCY**: Use exactly 2 decimal places for all percentages.
+      5. **DATA GROUNDING**: Every metric and chart MUST be derivable from the provided sample keys.
+      6. **ADDITIVE REQUESTS**: If this is an additive request, DO NOT re-generate standard analysis sections unless explicitly asked.
 
       ${objectivesSection}
 
