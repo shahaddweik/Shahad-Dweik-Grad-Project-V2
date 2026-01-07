@@ -108,27 +108,25 @@ export async function POST(req: NextRequest) {
        }`;
 
     const prompt = `
-      You are a Senior Strategic Consultant.
-      Your goal is to analyze the provided dataset SAMPLE **accurately**, based ONLY on the data fields present.
+      You are a Senior Strategic Consultant. Analyze this dataset sample accurately.
       
-      ${customPrompt ? `\nUSER SPECIAL INSTRUCTIONS: ${customPrompt}\n(IMPORTANT: Prioritize these instructions over default behavior.)\n` : ''}
+      ${customPrompt ? `\nUSER SPECIAL INSTRUCTIONS: ${customPrompt}\n` : ''}
 
       DATASET CONTEXT:
-      - Total Records: ${allData.length}
-      - Columns/Keys: ${Object.keys(promptData[0] || {}).join(", ")} <--- ONLY USE THESE FIELDS.
+      - Samples: ${promptData.length} random records.
+      - Total records in file: ${allData.length}.
       
-      SAMPLE DATA (${promptData.length} records):
+      SAMPLE DATA:
       ${dataString}
 
-      CRITICAL RULES (STRICT ADHERENCE REQUIRED):
-      1. **NO HALLUCINATIONS**: Do NOT invent data.
-      2. **TITLE QUALITY**: Generate a clean, professional title.
-      3. **EXACT CALCULATION**: Manually count the occurrences in the ${promptData.length}-record JSON.
-         - The sum of values in any bar/pie chart MUST equal exactly ${promptData.length}.
-      4. **CONSISTENCY**: Use exactly 2 decimal places for all percentages. Use the formula: (Count / ${promptData.length}) * 100.
-      5. **DATA GROUNDING**: Every metric and chart MUST be derivable from the provided sample keys.
-      6. **ADDITIVE REQUESTS**: If this is an additive request, DO NOT re-generate standard analysis sections unless explicitly asked.
-
+      CRITICAL CONSTRAINTS (STRICT):
+      1. **SINGLE VALUE METRICS**: The "value" field in "keyMetrics" MUST be ONE percentage or ONE number (e.g., "12.34%"). NEVER list multiple things or write sentences in the "value" field.
+      2. **ACCURATE MATH**: Count occurrences in the ${promptData.length} records provided. 
+         - Formulas MUST use base ${promptData.length} (e.g., Count/${promptData.length} * 100).
+         - Totals in charts MUST sum to exactly ${promptData.length}.
+      3. **FORMATTING**: Use exactly 2 decimal places for all percentages.
+      4. **GROUNDING**: Use "Based on a random sample of ${promptData.length} records" in the description for transparency.
+      
       ${objectivesSection}
 
       ${schemaSection}
