@@ -34,9 +34,9 @@ export async function POST(req: NextRequest) {
     const allData = XLSX.utils.sheet_to_json(sheet);
 
     // Send a random sample of data to the AI to provide a better overview of the entire dataset.
-    // We use a simple shuffle and take 35 records.
+    // Reduced to 25 records to strictly fit within the 6000-token limit of Groq's fallback models.
     const shuffled = [...allData].sort(() => 0.5 - Math.random());
-    const promptData = shuffled.slice(0, 35);
+    const promptData = shuffled.slice(0, 25);
     const dataString = JSON.stringify(promptData);
 
     // 2. Prepare Detailed Prompt
