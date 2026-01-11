@@ -50,18 +50,18 @@ export function SimpleBarChart({ data, color = ACCENT_COLOR }: { data: ChartData
     <ResponsiveContainer width="100%" height="100%">
       <BarChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-        <XAxis 
-          dataKey="name" 
-          tick={{ fontSize: 12, fill: '#6b7280' }} 
-          axisLine={false} 
-          tickLine={false} 
+        <XAxis
+          dataKey="name"
+          tick={{ fontSize: 12, fill: '#6b7280' }}
+          axisLine={false}
+          tickLine={false}
         />
-        <YAxis 
-          tick={{ fontSize: 12, fill: '#6b7280' }} 
-          axisLine={false} 
-          tickLine={false} 
+        <YAxis
+          tick={{ fontSize: 12, fill: '#6b7280' }}
+          axisLine={false}
+          tickLine={false}
         />
-        <Tooltip 
+        <Tooltip
           contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
           cursor={{ fill: '#f3f4f6' }}
         />
@@ -87,7 +87,7 @@ export function SimplePieChart({ data }: { data: ChartDataPoint[] }) {
           fill="#8884d8"
           paddingAngle={5}
           dataKey="value"
-          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`} 
+          label={({ name, percent }) => `${name} ${(percent ? percent * 100 : 0).toFixed(1)}%`}
         >
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
@@ -108,21 +108,21 @@ export function SimpleAreaChart({ data, color = ACCENT_COLOR }: { data: ChartDat
       <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor={color} stopOpacity={0.3}/>
-            <stop offset="95%" stopColor={color} stopOpacity={0}/>
+            <stop offset="5%" stopColor={color} stopOpacity={0.3} />
+            <stop offset="95%" stopColor={color} stopOpacity={0} />
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-        <XAxis 
-          dataKey="name" 
-          tick={{ fontSize: 12, fill: '#6b7280' }} 
-          axisLine={false} 
-          tickLine={false} 
+        <XAxis
+          dataKey="name"
+          tick={{ fontSize: 12, fill: '#6b7280' }}
+          axisLine={false}
+          tickLine={false}
         />
-        <YAxis 
-          tick={{ fontSize: 12, fill: '#6b7280' }} 
-          axisLine={false} 
-          tickLine={false} 
+        <YAxis
+          tick={{ fontSize: 12, fill: '#6b7280' }}
+          axisLine={false}
+          tickLine={false}
         />
         <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
         <Area type="monotone" dataKey="value" stroke={color} fillOpacity={1} fill="url(#colorValue)" />
