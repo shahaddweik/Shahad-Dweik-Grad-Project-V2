@@ -31,7 +31,19 @@ export async function POST(req: NextRequest) {
     }
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
-    const allData = XLSX.utils.sheet_to_json(sheet);
+    const rawData = XLSX.utils.sheet_to_json(sheet);
+
+    // 1.5 Automatic Deduplication
+    // Filter out exactly identical rows to ensure data integrity
+    const seen = new Set();
+    const allData = rawData.filter(item => {
+      const serial = JSON.stringify(item);
+      if (seen.has(serial)) return false;
+      seen.add(serial);
+      return true;
+    });
+
+    console.log(`Deduplication: Removed ${rawData.length - allData.length} duplicate rows. Final count: ${allData.length}`);
 
     // Send a random sample of data to the AI to provide a better overview of the entire dataset.
     // REDUCED TO 30: 35 exceeded the 6000 TPM limit (6447 tokens). 30 is the safe maximum.
@@ -102,6 +114,9 @@ export async function POST(req: NextRequest) {
          "recommendations": [
            { "title": "String", "action": "String", "impact": "String (high, medium, low)" }
          ],
+         "dataCleaningReport": [
+           { "step": "String", "details": "String" }
+         ],
          "removals": [
             { "type": "String", "title": "String" }
          ]
@@ -126,6 +141,7 @@ export async function POST(req: NextRequest) {
          - Totals in charts MUST sum to exactly ${promptData.length}.
       3. **FORMATTING**: Use exactly 2 decimal places for all percentages.
       4. **GROUNDING**: Use "Based on a random sample of ${promptData.length} records" in the description for transparency.
+      5. **DATA CLEANING REPORT**: In the "dataCleaningReport" field, explain any data normalization or "cleaning" steps you performed conceptually (e.g., "Key Stripping", "Null Handling", "Token Optimization"). Explain HOW this helps the results be more accurate.
       
       ${objectivesSection}
 
@@ -171,8 +187,20 @@ export async function POST(req: NextRequest) {
 
     try {
       dashboardData = JSON.parse(jsonString);
-      // Inject actual record count
+      // Inject actual record count and data cleaning report
       dashboardData.recordCount = allData.length;
+
+      // Initialize cleaning report if not exists
+      if (!dashboardData.dataCleaningReport) dashboardData.dataCleaningReport = [];
+
+      // Add deduplication step to the report
+      if (rawData.length > allData.length) {
+        dashboardData.dataCleaningReport.unshift({
+          step: "Redundant Row Removal",
+          details: `Identified and removed ${rawData.length - allData.length} duplicate shipments from the original dataset to ensure statistical accuracy.`
+        });
+      }
+
     } catch (parseError) {
       console.error('Failed to parse Groq response:', parseError);
       console.error('Raw response:', text);

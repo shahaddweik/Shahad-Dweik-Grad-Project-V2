@@ -32,16 +32,22 @@ export interface Recommendation {
   isNew?: boolean;
 }
 
+export interface DataCleaningStep {
+  step: string;
+  details: string;
+}
+
 export interface DashboardData {
   analysisTitle: string;
   analysisDescription: string;
-  
+
   keyMetrics: Metric[];
-  
+
   dynamicCharts: DynamicChart[];
-  
+
   keyInsights: GenericInsight[];
   recommendations: Recommendation[];
+  dataCleaningReport?: DataCleaningStep[];
   removals?: {
     type: 'metric' | 'chart' | 'insight' | 'recommendation';
     id?: string;
